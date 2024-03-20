@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Form</title>
+    <h:outputStylesheet library="css" name="Main.css"/>
+    <meta charset="UTF-8"/>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <h2>ЗАО Птицефабрика №1</h2>
+        <h:form id="orderForm">
+            <div class="form-group">
+                <label for="surname">Фамилия:</label>
+                <h:inputText id="surname" name="surname" required="true" value="#{orderBean.surname}"/>
+            </div>
+            <div class="form-group">
+                <label for="initials">Инициалы:</label>
+                <h:inputText id="initials" name="initials" required="true" value="#{orderBean.initials}"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <h:inputSecret id="password" name="password" required="true" value="#{orderBean.password}"/>
+            </div>
+            <div class="form-group">
+                <label for="recipient-address">Адрес получателя:</label>
+                <h:inputText id="recipient-address" name="recipient-address" required="true" value="#{orderBean.recipientAddress}"/>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Количество:</label>
+                <h:inputText id="quantity" name="quantity" type="number" required="true" value="#{orderBean.quantity}"/>
+            </div>
+            <div class="form-group">
+                <label>Тип:</label>
+                <h:selectOneMenu id="type1" name="type1" required="true" style="margin-bottom: 5%;" value="#{orderBean.type1}">
+                    <f:selectItem itemLabel="Куриные" itemValue="Куриные" />
+                    <h:message for="type1" />
+                </h:selectOneMenu>
+                <h:selectOneMenu id="type2" name="type2" required="true" value="#{orderBean.type2}">
+                    <f:selectItem itemLabel="Отборные" itemValue="Отборные" />
+                    <h:message for="type2" />
+                </h:selectOneMenu>
+            </div>
+
+            <div class="form-group">
+                <label>Доставка:</label><br />
+                <h:selectOneRadio id="delivery" value="#{orderBean.delivery}" required="true">
+                    <f:selectItem itemLabel="Почтой" itemValue="Почтой" />
+                    <f:selectItem itemLabel="Электронно" itemValue="Электронно" />
+                    <f:selectItem itemLabel="Курьером" itemValue="Курьером" />
+                    <h:message for="delivery" />
+                </h:selectOneRadio>
+            </div>
+            <div class="form-group checkbox-group">
+                <h:selectBooleanCheckbox id="invoice" value="#{orderBean.invoice}" />
+                <label for="invoice">Требуется накладная</label>
+            </div>
+            <div class="form-group">
+                <label for="additional-info">Дополнительная информация:</label><br />
+                <h:inputTextarea id="additional-info" name="additional-info" rows="4" cols="50" value="#{orderBean.additionalInfo}" />
+            </div>
+            <div class="form-group">
+                <label for="excelFile">Выберите файл Excel:</label>
+                <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls" />
+            </div>
+            <div class="form-group">
+                <h:commandButton value="Заказать" action="#{orderBean.submit}"/>
+                <h:commandButton value="Отменить" type="reset" />
+            </div>
+        </h:form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</h:body>
+</html>
