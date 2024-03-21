@@ -12,10 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 
 @Named
 @SessionScoped
@@ -36,22 +33,42 @@ public class OrderBean implements Serializable {
     public String submit() {
         try {
             String fileName = "orders.xlsx";
+            String directoryPath = "C:\\temp";
 
-            // Create a workbook and sheet
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Orders");
+            // Check if the directory exists, create it if not
+            File directory = new File(directoryPath);
+            directory.mkdirs();
 
-            // Create header row
-            Row headerRow = sheet.createRow(0);
-            String[] headers = {"Surname", "Initials", "Password", "Recipient Address", "Quantity",
-                    "Type 1", "Type 2", "Delivery", "Invoice", "Additional Info"};
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
+            // Create or open the workbook
+            String filePath = directoryPath + File.separator + fileName;
+            File file = new File(filePath);
+            Workbook workbook;
+            Sheet sheet;
+            if (file.exists()) {
+                // If the file exists, open it and get the existing sheet
+                FileInputStream fis = new FileInputStream(file);
+                workbook = new XSSFWorkbook(fis);
+                sheet = workbook.getSheet("Orders");
+            } else {
+                // If the file doesn't exist, create a new workbook and sheet
+                workbook = new XSSFWorkbook();
+                sheet = workbook.createSheet("Orders");
+
+                // Create header row if the file is new
+                Row headerRow = sheet.createRow(0);
+                String[] headers = {"Surname", "Initials", "Password", "Recipient Address", "Quantity",
+                        "Type 1", "Type 2", "Delivery", "Invoice", "Additional Info"};
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                }
             }
 
-            // Create data row
-            Row dataRow = sheet.createRow(1);
+            // Get the last row number
+            int lastRowNum = sheet.getLastRowNum();
+
+            // Create data row below the last row
+            Row dataRow = sheet.createRow(lastRowNum + 1);
             dataRow.createCell(0).setCellValue(surname);
             dataRow.createCell(1).setCellValue(initials);
             dataRow.createCell(2).setCellValue(password);
@@ -64,20 +81,12 @@ public class OrderBean implements Serializable {
             dataRow.createCell(9).setCellValue(additionalInfo);
 
             // Write to file
-
-            String directoryPath = "C:\\temp";
-            File directory = new File(directoryPath);
-            directory.mkdirs(); // Create directory if it doesn't exist
-            String filePath = directoryPath + File.separator + fileName;
-
-            File file = new File(filePath + "32" + fileName);
             FileOutputStream fileOut = new FileOutputStream(file);
             workbook.write(fileOut);
             fileOut.close();
             workbook.close();
 
             // Provide the user with the option to download the file
-
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Form data saved to Excel file."));
         } catch (IOException e) {
@@ -88,6 +97,7 @@ public class OrderBean implements Serializable {
 
         return "success";
     }
+
 
     public void setSurname(String surname) {
         this.surname = surname;
