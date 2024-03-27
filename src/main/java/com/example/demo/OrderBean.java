@@ -3,7 +3,6 @@ package com.example.demo;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import org.apache.poi.ss.usermodel.Cell;
@@ -13,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.util.Date;
 
 @Named
 @SessionScoped
@@ -27,6 +27,8 @@ public class OrderBean implements Serializable {
     private String delivery;
     private boolean invoice;
     private String additionalInfo;
+    private Date deliveryDate;
+    private Date minDeliveryDate;
 
     // Getter and setter methods for all the properties
 
@@ -56,7 +58,7 @@ public class OrderBean implements Serializable {
 
                 // Create header row if the file is new
                 Row headerRow = sheet.createRow(0);
-                String[] headers = {"Surname", "Initials", "Password", "Recipient Address", "Quantity",
+                String[] headers = {"Surname", "Initials", "Recipient Address", "Quantity",
                         "Type 1", "Type 2", "Delivery", "Invoice", "Additional Info"};
                 for (int i = 0; i < headers.length; i++) {
                     Cell cell = headerRow.createCell(i);
@@ -71,14 +73,13 @@ public class OrderBean implements Serializable {
             Row dataRow = sheet.createRow(lastRowNum + 1);
             dataRow.createCell(0).setCellValue(surname);
             dataRow.createCell(1).setCellValue(initials);
-            dataRow.createCell(2).setCellValue(password);
-            dataRow.createCell(3).setCellValue(recipientAddress);
-            dataRow.createCell(4).setCellValue(quantity);
-            dataRow.createCell(5).setCellValue(type1);
-            dataRow.createCell(6).setCellValue(type2);
-            dataRow.createCell(7).setCellValue(delivery);
-            dataRow.createCell(8).setCellValue(invoice);
-            dataRow.createCell(9).setCellValue(additionalInfo);
+            dataRow.createCell(2).setCellValue(recipientAddress);
+            dataRow.createCell(3).setCellValue(quantity);
+            dataRow.createCell(4).setCellValue(type1);
+            dataRow.createCell(5).setCellValue(type2);
+            dataRow.createCell(6).setCellValue(delivery);
+            dataRow.createCell(7).setCellValue(invoice);
+            dataRow.createCell(8).setCellValue(additionalInfo);
 
             // Write to file
             FileOutputStream fileOut = new FileOutputStream(file);
@@ -167,5 +168,21 @@ public class OrderBean implements Serializable {
     }
     public String getAdditionalInfo(){
         return this.additionalInfo;
+    }
+
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public Date getMinDeliveryDate() {
+        return minDeliveryDate;
+    }
+
+    public void setMinDeliveryDate(Date minDeliveryDate) {
+        this.minDeliveryDate = minDeliveryDate;
     }
 }
